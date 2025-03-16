@@ -29,35 +29,35 @@ library Console {
             postdecimal /= 10;
     }
 
-    function toString(uint256 amount, uint8 precision) internal pure returns (string memory result) {
+    function toString(uint256 amount, uint8 precision) internal view returns (string memory result) {
         return toString(int256(amount), precision);
     }
 
-    function toString(int256 amount, uint8 precision) internal pure returns (string memory result) {
+    function toString(int256 amount, uint8 precision) internal view returns (string memory result) {
         (int256 predecimal, string memory zeros, uint256 postdecimal) = convert(amount, precision);
         result = string.concat(Strings.toStringSigned(predecimal), ".");
         result = string.concat(result, zeros);
         result = string.concat(result, Strings.toString(postdecimal));
     }
 
-    function logP(string memory format, uint256 amount, uint8 precision) internal pure {
+    function logP(string memory format, uint256 amount, uint8 precision) internal view {
         logP(format, int256(amount), precision);
     }
 
-    function logP(string memory format, int256 amount, uint8 precision) internal pure {
+    function logP(string memory format, int256 amount, uint8 precision) internal view {
         (int256 predecimal, string memory zeros, uint256 postdecimal) = convert(amount, precision);
         console.log(format, Strings.toStringSigned(predecimal), zeros, Strings.toString(postdecimal));
     }
 
-    function log18(string memory format, uint256 amount) internal pure {
+    function log18(string memory format, uint256 amount) internal view {
         return logP(format, amount, 18);
     }
 
-    function log18(string memory format, int256 amount) internal pure {
+    function log18(string memory format, int256 amount) internal view {
         return logP(format, amount, 18);
     }
 
-    function log(string memory format, uint64[] memory array) internal pure {
+    function log(string memory format, uint64[] memory array) internal view {
         string memory s;
         for (uint256 i = 0; i < array.length; i++) {
             s = string.concat(s, Strings.toString(array[i]));
@@ -66,59 +66,59 @@ library Console {
         console.log(format, s);
     }
 
-    function log(uint256 first, uint256 second, uint256 third, uint256 fourth) internal pure {
+    function log(uint256 first, uint256 second, uint256 third, uint256 fourth) internal view {
         return console.log(Strings.toString(first), Strings.toString(second), Strings.toString(third), Strings.toString(fourth));
     }
 
-    function log(uint256 first, uint256 second, uint256 third) internal pure {
+    function log(uint256 first, uint256 second, uint256 third) internal view {
         return console.log(Strings.toString(first), Strings.toString(second), Strings.toString(third));
     }
 
-    function log(string memory format, uint256 first, uint256 second, uint256 third) internal pure {
+    function log(string memory format, uint256 first, uint256 second, uint256 third) internal view {
         return console.log(format, Strings.toString(first), Strings.toString(second), Strings.toString(third));
     }
 
-    function log(string memory format, uint256 first, uint256 second, string memory third) internal pure {
+    function log(string memory format, uint256 first, uint256 second, string memory third) internal view {
         return console.log(format, Strings.toString(first), Strings.toString(second), third);
     }
 
-    function log(string memory format, uint256 first, uint256 second) internal pure {
+    function log(string memory format, uint256 first, uint256 second) internal view {
         return console.log(format, Strings.toString(first), Strings.toString(second));
     }
 
-    function log(string memory format, uint256 first, address second) internal pure {
+    function log(string memory format, uint256 first, address second) internal view {
         return console.log(format, Strings.toString(first), second);
     }
 
-    function log(string memory format, address first, address second, address third) internal pure {
+    function log(string memory format, address first, address second, address third) internal view {
         return console.log(format, first, second, third);
     }
 
-    function log(string memory format, address first, uint256 second, uint256 third) internal pure {
+    function log(string memory format, address first, uint256 second, uint256 third) internal view {
         return console.log(format, first, Strings.toString(second), Strings.toString(third));
     }
 
-    function log(string memory format, address first, address second) internal pure {
+    function log(string memory format, address first, address second) internal view {
         return console.log(format, first, second);
     }
 
-    function log(string memory format, uint256 first) internal pure {
+    function log(string memory format, uint256 first) internal view {
         return console.log(format, Strings.toString(first));
     }
 
-    function log(string memory format, address first) internal pure {
+    function log(string memory format, address first) internal view {
         return console.log(format, first);
     }
 
-    function log(uint256 first) internal pure {
+    function log(uint256 first) internal view {
         return console.log(Strings.toString(first));
     }
 
-    function log(address first) internal pure {
+    function log(address first) internal view {
         return console.log(first);
     }
 
-    function log(string memory first) internal pure {
+    function log(string memory first) internal view {
         return console.log(first);
     }
 
