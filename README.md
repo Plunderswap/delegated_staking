@@ -163,7 +163,7 @@ forge script script/Configure.s.sol --broadcast --legacy --sig "commissionReceiv
 
 ## Validator Addition and Removal
 
-A staking pool can operate with up to 255 validator nodes.
+A staking pool can operate with up to 100 validator nodes.
 
 If your node has already been activated as a validator i.e. solo staker, it can join a staking pool. Run
 ```bash
@@ -282,6 +282,8 @@ To query the current price of an LST, run
 ```bash
 cast to-unit $(cast call 0x7A0b7e6D24eDe78260c9ddBD98e828B0e11A8EA2 "getPrice()(uint256)" --block latest | sed 's/\[[^]]*\]//g') ether
 ```
+
+Note that the minimum amount that can be staked in one transaction is 100 ZIL. In the non-liquid variant, the same minimum amount of ZIL applies to unstaking as well, unless everything is unstaked, which can be less than 100 ZIL.
 
 To unstake e.g. 100 LST (liquid variant) or 100 ZIL (non-liquid variant), run
 ```bash
@@ -513,4 +515,4 @@ If the execution reverts, you can look up the error based on the first 4 bytes o
 
 ## Audit
 
-Version `1.0.0` of the contracts was audited in March 2025: [audit report](https://hacken.io/audits/zilliqa/sca-zilliqa-delegated-staking-mar2025/)
+Version `1.0.0` of the contracts was audited in March 2025, and version `1.1.1` was retested in June 2025: [audit report](https://hacken.io/audits/zilliqa/sca-zilliqa-delegated-staking-mar2025/)

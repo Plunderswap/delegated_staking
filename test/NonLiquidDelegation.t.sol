@@ -4,7 +4,7 @@ pragma solidity 0.8.28;
 /* solhint-disable no-console */
 import { SafeCast } from "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
-import { Deposit } from "@zilliqa/zq2/deposit_v6.sol";
+import { Deposit } from "@zilliqa/zq2/deposit_v5.sol";
 import { Console } from "script/Console.s.sol";
 import { BaseDelegation } from "src/BaseDelegation.sol";
 import { IDelegation } from "src/IDelegation.sol";
@@ -2304,8 +2304,8 @@ contract NonLiquidDelegationTest is BaseDelegationTest {
                     continue;
                 Console.log("block %s avg rewards %s", block.number, rewards / blocks);
                 uint256 amount =
-                    operation % 2 == 0 && stakedZil[user] > 2 * delegation.MIN_DELEGATION() ?
-                    vm.randomUint(delegation.MIN_DELEGATION(), stakedZil[user] / 2):
+                    operation % 2 == 0 && stakedZil[user] >= delegation.MIN_DELEGATION() ?
+                    vm.randomUint(delegation.MIN_DELEGATION(), stakedZil[user]):
                     stakedZil[user];
                 uint256 pendingBefore = delegation.totalPendingWithdrawals();
                 uint256 totalStakeValue = delegation.getDelegatedTotal();
