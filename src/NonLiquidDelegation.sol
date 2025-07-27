@@ -146,7 +146,28 @@ contract NonLiquidDelegation is IDelegation, BaseDelegation {
         _depositAndAddToPool(
             blsPubKey,
             peerId,
-            signature
+            signature,
+            0
+        );
+        // the owner's deposit must also be recorded as staking otherwise
+        // the owner would not benefit from the rewards accrued by the deposit
+        if (msg.value > 0)
+            _appendToHistory(int256(msg.value), _msgSender());
+    }
+
+    /// @inheritdoc BaseDelegation
+    function depositFromPool(
+        bytes calldata blsPubKey,
+        bytes calldata peerId,
+        bytes calldata signature,
+        uint256 amount
+    ) public payable override onlyOwner {
+        _increaseStake(msg.value);
+        _depositAndAddToPool(
+            blsPubKey,
+            peerId,
+            signature,
+            amount
         );
         // the owner's deposit must also be recorded as staking otherwise
         // the owner would not benefit from the rewards accrued by the deposit
@@ -424,9 +445,9 @@ contract NonLiquidDelegation is IDelegation, BaseDelegation {
     function getAdditionalSteps() public view returns(uint64) {
         NonLiquidDelegationStorage storage $ = _getNonLiquidDelegationStorage();
         uint256 first = $.lastStakingIndex[_msgSender()];
-        if (first == 0)
+        if (first == 0 && $.stakingIndices[_msgSender()].length > 0)
             first = $.stakingIndices[_msgSender()][0];
-        return uint64($.stakings.length - first - 1);
+        return $.stakings.length > first ? uint64($.stakings.length - first - 1) : 0;
     }
 
     /**

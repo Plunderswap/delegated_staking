@@ -94,9 +94,11 @@ or
 ```bash
 forge verify-contract 0x7C623e01c5ce2e313C223ef2aEc1Ae5C6d12D9DD NonLiquidDelegation --verifier sourcify
 ```
-using the address of the implementation. Note that you have to repeat this with the address of the new implementation each time you upgrade your delegation contract. You have to verify the proxy contract separately and only once after the initial deployment by running
+using the address of the implementation. Note that you have to repeat this with the address of the new implementation each time you upgrade your delegation contract. You have to verify the proxy contract (and its LST contract in case of the liquid variant) separately and only once after the initial deployment by running
 ```bash
 forge verify-contract 0x7A0b7e6D24eDe78260c9ddBD98e828B0e11A8EA2 ERC1967Proxy --verifier sourcify --constructor-args $(cast abi-encode "_(address,bytes)" 0x7C623e01c5ce2e313C223ef2aEc1Ae5C6d12D9DD $(cast calldata "initialize(address,string,string)" 0x15fc323DFE5D5DCfbeEdc25CEcbf57f676634d77 Name Symbol))
+
+forge verify-contract $(cast call 0x7A0b7e6D24eDe78260c9ddBD98e828B0e11A8EA2 "getLST()(address)") NonRebasingLST --verifier sourcify --constructor-args $(cast abi-encode "_(string,string)" Name Symbol)
 ```
 using the address of the proxy contract, the address of the implementation contract and the signer address of the deployment transaction as well as the token `Name` and `Symbol` that you specified during deployment, or
 ```bash
@@ -240,6 +242,16 @@ cast send --legacy --value 5000000ether --private-key $PRIVATE_KEY \
 0x92fbe50544dce63cfdcc88301d7412f0edea024c91ae5d6a04c7cd3819edfc1b9d75d9121080af12e00f054d221f876c \
 0x002408011220d5ed74b09dcbe84d3b32a56c01ab721cf82809848b6604535212a219d35c412f \
 0xb14832a866a49ddf8a3104f8ee379d29c136f29aeb8fccec9d7fb17180b99e8ed29bee2ada5ce390cb704bc6fd7f5ce814f914498376c4b8bc14841a57ae22279769ec8614e2673ba7f36edc5a4bf5733aa9d70af626279ee2b2cde939b4bd8a
+```
+
+If you want to deposit only a certain amount from the delegation contract's available stake, run the following command with the amount (e.g. 10 million ZIL) specified as the last argument:
+```bash
+cast send --legacy --value 5000000ether --private-key $PRIVATE_KEY \
+0x7a0b7e6d24ede78260c9ddbd98e828b0e11a8ea2 "depositFromPool(bytes,bytes,bytes,uint256)" \
+0x92fbe50544dce63cfdcc88301d7412f0edea024c91ae5d6a04c7cd3819edfc1b9d75d9121080af12e00f054d221f876c \
+0x002408011220d5ed74b09dcbe84d3b32a56c01ab721cf82809848b6604535212a219d35c412f \
+0xb14832a866a49ddf8a3104f8ee379d29c136f29aeb8fccec9d7fb17180b99e8ed29bee2ada5ce390cb704bc6fd7f5ce814f914498376c4b8bc14841a57ae22279769ec8614e2673ba7f36edc5a4bf5733aa9d70af626279ee2b2cde939b4bd8a \
+10000000000000000000000000
 ```
 
 Note that the reward address registered for the validator node will be the address of the delegation contract (the proxy contract to be more precise), but the deposit will not take effect and the node will not start to earn rewards until the epoch after next.
@@ -510,6 +522,7 @@ If the execution reverts, you can look up the error based on the first 4 bytes o
 0xa8ca83c9   StakerAlreadyExists(address)
 0x30e667d2   IncompatibleVersion(uint64)
 0x8579befe   ZeroAddressNotAllowed()
+0xa0753f46   InsufficientAvailableStake(uint256,uint256)
 ```
 
 
